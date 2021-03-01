@@ -10,7 +10,8 @@ import DeletePlacePopup from './DeletePlacePopup.js';
 
 
 function UserCards({
-      successfulRegistration,
+      userEmail,
+      onAddPlaceClick,
       signOut,
       onEditAvatar,
       onEditProfile,
@@ -43,12 +44,13 @@ function UserCards({
             headerLink={"Выход"} 
             path={"/sign-in"}
             onClick={signOut}
+            userEmail={userEmail}
           />
 
           <Main 
             onEditAvatar={onEditAvatar}
             onEditProfile={onEditProfile}
-            onAddPlace={onAddPlace}
+            onAddPlace={onAddPlaceClick}
             onCardClick={onCardClick}
             cards={cards}
             onCardLike={onCardLike}

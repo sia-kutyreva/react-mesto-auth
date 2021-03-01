@@ -17,7 +17,8 @@ function App() {
   const [selectedCard, setIsSelectedCard] = React.useState(false);
   const [isDeleteCardPopup, setIsDeleteCardPopup] = React.useState(false);
   const [isImageFormOpen, setIsImageFormOpen] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState('');
+  const [currentUser, setCurrentUser] = React.useState({});
+  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState('');
   const [cards, setCards] = React.useState([]);
   const [deleteCard, setDeleteCard] = React.useState({});
   const [renderLoading, setRenderLoading] = React.useState(false);
@@ -79,10 +80,6 @@ function App() {
     setIsAddPlacePopupOpen(true);
   }
 
-  function handleInfoTooltip() {
-    setIsInfoTooltipOpen(true);
-  }
-
   function closeAllPopups() {
     setIsInfoTooltipOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -138,26 +135,6 @@ function App() {
       
   }
 
-  /*function onRegister(email, password) {
-    userAuth.register(email, password)
-      .then((res) => {
-        if (res.statusCode !== 400) {
-          handleInfoTooltip()
-          setSuccessfulRegistration(true);
-          history.push("/");
-        } else {
-          setSuccessfulRegistration(false);
-        }
-        handleInfoTooltip();
-      })
-      .catch((err) => {
-        console.log(err);
-        handleInfoTooltip();
-        setSuccessfulRegistration(false);
-      })
-      
-  }*/
-
   function onRegister(data) {
     userAuth.register( data )
       .then(() => {
@@ -190,9 +167,12 @@ function App() {
     if (localStorage.getItem('jwt')) {
       const jwt = localStorage.getItem('jwt');
       userAuth.getContent(jwt)
-        .then(() => {
-          setLoggedIn(true);
-          history.push("/user-cards");
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            setLoggedInUserEmail(res.data.email);
+            history.push("/user-cards");
+          }
         })
         .catch((err) => {
           console.log(err)
@@ -228,12 +208,13 @@ function App() {
 
             <ProtectedRoute path="/user-cards"
               component={UserCards}
+              userEmail={loggedInUserEmail}
               successfulRegistration={successfulRegistration}
               signOut={signOut}
               loggedIn={loggedIn}
               onEditAvatar={handleEditAvatarClick}
               onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
+              onAddPlaceClick={handleAddPlaceClick}
               onCardClick={handleCardClick}
               cards={cards}
               onCardLike={handleCardLike}
